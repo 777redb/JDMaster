@@ -9,6 +9,7 @@ import { LawReviewer } from './pages/LawReviewer';
 import { ContractDrafting } from './pages/ContractDrafting';
 import { LegalPad } from './pages/LegalPad';
 import { Login } from './pages/Login';
+import { AdminDashboard } from './pages/AdminDashboard';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToolType, LegalDocument } from './types';
@@ -81,6 +82,8 @@ const MainApp = () => {
         return <ContractDrafting onSaveToPad={handleSaveToPad} />;
       case ToolType.LEGAL_PAD:
         return <LegalPad documents={documents} onDelete={handleDeleteDoc} />;
+      case ToolType.ADMIN_PANEL:
+        return <AdminDashboard />;
       default:
         return <Dashboard onNavigate={handleNavigate} />;
     }

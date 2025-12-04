@@ -7,4 +7,5 @@ export enum ToolType {
   LAW_REVIEWER = 'law-reviewer',
   CONTRACT_DRAFTING = 'contract-drafting',
   LEGAL_PAD = 'legal-pad',
+  ADMIN_PANEL = 'admin-panel',
 }

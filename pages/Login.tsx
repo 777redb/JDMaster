@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Loader2, Lock, Mail, ShieldCheck } from 'lucide-react';
+import { Loader2, Lock, Mail, ShieldCheck, Terminal } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const { login, register } = useAuth();
@@ -13,7 +13,7 @@ export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [role, setRole] = useState<'student' | 'attorney'>('student');
+  const [role, setRole] = useState<'student' | 'attorney' | 'admin'>('student');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +32,13 @@ export const Login: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const fillAdmin = () => {
+    setIsLogin(true);
+    setEmail('admin@legalph.com');
+    setPassword('admin');
+    setError('');
   };
 
   return (
@@ -59,7 +66,7 @@ export const Login: React.FC = () => {
                 <div className="relative">
                   <input
                     type="text"
-                    required
+                    required={!isLogin}
                     className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all outline-none"
                     placeholder="Juan Dela Cruz"
                     value={name}
@@ -103,20 +110,27 @@ export const Login: React.FC = () => {
             {!isLogin && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">I am a...</label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
                     onClick={() => setRole('student')}
-                    className={`py-2 rounded-lg text-sm font-medium border ${role === 'student' ? 'bg-yellow-50 border-yellow-500 text-yellow-800' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+                    className={`py-2 rounded-lg text-xs font-medium border ${role === 'student' ? 'bg-yellow-50 border-yellow-500 text-yellow-800' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
                   >
                     Law Student
                   </button>
                   <button
                     type="button"
                     onClick={() => setRole('attorney')}
-                    className={`py-2 rounded-lg text-sm font-medium border ${role === 'attorney' ? 'bg-blue-50 border-blue-500 text-blue-800' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+                    className={`py-2 rounded-lg text-xs font-medium border ${role === 'attorney' ? 'bg-blue-50 border-blue-500 text-blue-800' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
                   >
                     Attorney
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRole('admin')}
+                    className={`py-2 rounded-lg text-xs font-medium border ${role === 'admin' ? 'bg-red-50 border-red-500 text-red-800' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}
+                  >
+                    Admin (Dev)
                   </button>
                 </div>
               </div>
@@ -139,6 +153,29 @@ export const Login: React.FC = () => {
             >
               {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
             </button>
+          </div>
+
+          {/* Dev Ops Panel */}
+          <div className="mt-8 pt-6 border-t border-gray-100">
+            <div className="bg-gray-800 rounded-lg p-4 text-left">
+              <div className="flex items-center text-yellow-500 mb-2">
+                <Terminal size={16} className="mr-2" />
+                <span className="text-xs font-bold uppercase tracking-wider">Dev Ops Access</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="text-xs text-gray-400">
+                  <p>User: <span className="text-gray-300 font-mono">admin@legalph.com</span></p>
+                  <p>Pass: <span className="text-gray-300 font-mono">admin</span></p>
+                </div>
+                <button
+                  type="button"
+                  onClick={fillAdmin}
+                  className="px-3 py-1.5 bg-yellow-600 hover:bg-yellow-700 text-white text-xs font-bold rounded transition-colors"
+                >
+                  Auto-fill
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

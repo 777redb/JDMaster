@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { NAV_ITEMS } from "../constants/nav-items";
 import { ToolType } from "../types/tool-type";
 import { X } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 interface MobileSidebarProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ export default function MobileSidebar({
   currentTool,
   onNavigate,
 }: MobileSidebarProps) {
+  const { user } = useAuth();
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
@@ -24,6 +26,13 @@ export default function MobileSidebar({
         document.body.style.overflow = "";
     };
   }, [isOpen]);
+
+  const filteredItems = NAV_ITEMS.filter(item => {
+    if (item.id === ToolType.ADMIN_PANEL) {
+      return user?.role === 'admin';
+    }
+    return true;
+  });
 
   return (
     <div
@@ -63,7 +72,7 @@ export default function MobileSidebar({
         </div>
 
         <nav className="flex flex-col gap-2">
-        {NAV_ITEMS.map((item) => {
+        {filteredItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentTool === item.id;
 

@@ -1,5 +1,4 @@
-
-import { Request, Response, NextFunction } from 'express';
+import { Request as ExpressRequest, Response as ExpressResponse, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
@@ -12,13 +11,16 @@ interface UserPayload {
 declare global {
   namespace Express {
     interface Request {
-      user?: UserPayload;
+      user?: {
+        id: string;
+        role: string;
+      };
     }
   }
 }
 
-export const authenticate = (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.headers.authorization;
+export const authenticate = (req: ExpressRequest, res: ExpressResponse, next: NextFunction) => {
+  const authHeader = req.header('Authorization');
   
   if (!authHeader?.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Unauthorized' });
@@ -36,10 +38,17 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
 };
 
 export const requireRole = (roles: string[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: ExpressRequest, res: ExpressResponse, next: NextFunction) => {
     if (!req.user || !roles.includes(req.user.role)) {
       return res.status(403).json({ error: 'Forbidden' });
     }
     next();
   };
+};
+
+export const adminOnly = (req: ExpressRequest, res: ExpressResponse, next: NextFunction) => {
+  if (!req.user || req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin access only' });
+  }
+  next();
 };

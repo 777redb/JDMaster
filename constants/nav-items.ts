@@ -1,5 +1,5 @@
 
-import { BookOpen, LayoutDashboard, Scale, Search, FileText, PenTool, Gavel } from "lucide-react";
+import { BookOpen, LayoutDashboard, Scale, Search, FileText, PenTool, Gavel, ShieldAlert } from "lucide-react";
 import { NavItem } from "../types/nav-item";
 import { ToolType } from "../types/tool-type";
 
@@ -11,4 +11,5 @@ export const NAV_ITEMS: NavItem[] = [
   { id: ToolType.LAW_REVIEWER, label: 'Reviewer', icon: FileText, description: 'Structured Law Reviewer Mode' },
   { id: ToolType.CONTRACT_DRAFTING, label: 'Contracts', icon: PenTool, description: 'AI Contract Drafting Engine' },
   { id: ToolType.LEGAL_PAD, label: 'Legal Pad', icon: Gavel, description: 'Smart Workspace for Legal Notes' },
+  { id: ToolType.ADMIN_PANEL, label: 'Admin Panel', icon: ShieldAlert, description: 'System Administration' },
 ];

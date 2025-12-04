@@ -5,20 +5,17 @@ import { checkQuota } from '../middleware/quota';
 import { getQueue } from '../lib/queue';
 
 const router = express.Router();
-const queue = getQueue('case-digest');
+const queue = getQueue('case-build');
 
-router.post('/generate', authenticate, checkQuota(1), async (req, res) => {
+router.post('/query', authenticate, checkQuota(3), async (req, res) => {
   try {
-    const { caseText } = req.body;
-    if (!caseText) return res.status(400).json({ error: 'Case text required' });
-
-    // Add job to queue
-    const { id } = await queue.add('digest-job', { 
-      caseText, 
-      userId: req.user?.id 
+    const { query } = req.body;
+    
+    const { id } = await queue.add('case-build-job', { 
+      query, userId: req.user?.id 
     });
 
-    res.json({ jobId: id, status: 'queued', message: 'Case digest queued for processing' });
+    res.json({ jobId: id, status: 'queued' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to queue job' });
   }
@@ -27,7 +24,6 @@ router.post('/generate', authenticate, checkQuota(1), async (req, res) => {
 router.get('/status/:id', authenticate, async (req, res) => {
   const { id } = req.params;
   const job = await queue.getJob(id);
-  
   if (!job) return res.status(404).json({ error: 'Job not found' });
 
   res.json({

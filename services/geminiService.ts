@@ -29,12 +29,10 @@ const pollJob = async (jobId: string, endpoint: string): Promise<string> => {
 export const generateCaseDigest = async (caseText: string): Promise<string> => {
   try {
     const { data } = await api.post('/case-digest/generate', { caseText });
-    // Assuming backend returns { jobId: '...' } immediately
     return await pollJob(data.jobId, '/case-digest');
   } catch (error: any) {
-    console.error("API Error:", error);
-    if (error.response?.status === 402) return "Quota exceeded. Please upgrade your plan.";
-    return "Error generating digest. System may be overloaded.";
+    if (error.response?.status === 402) throw new Error(error.response.data.message);
+    throw error;
   }
 };
 
@@ -42,9 +40,9 @@ export const generateMockBarQuestion = async (config: MockBarConfig): Promise<st
   try {
     const { data } = await api.post('/mock-bar/generate', config);
     return await pollJob(data.jobId, '/mock-bar');
-  } catch (error) {
-    console.error("API Error:", error);
-    return "Error generating mock bar question.";
+  } catch (error: any) {
+    if (error.response?.status === 402) throw new Error(error.response.data.message);
+    throw error;
   }
 };
 
@@ -52,9 +50,9 @@ export const generateCaseBuild = async (query: string): Promise<string> => {
   try {
     const { data } = await api.post('/case-build/query', { query });
     return await pollJob(data.jobId, '/case-build');
-  } catch (error) {
-    console.error("API Error:", error);
-    return "Error generating legal research.";
+  } catch (error: any) {
+    if (error.response?.status === 402) throw new Error(error.response.data.message);
+    throw error;
   }
 };
 
@@ -62,9 +60,9 @@ export const generateLawReviewer = async (topic: string): Promise<string> => {
   try {
     const { data } = await api.post('/reviewer/build', { topic });
     return await pollJob(data.jobId, '/reviewer');
-  } catch (error) {
-    console.error("API Error:", error);
-    return "Error generating reviewer.";
+  } catch (error: any) {
+    if (error.response?.status === 402) throw new Error(error.response.data.message);
+    throw error;
   }
 };
 
@@ -72,8 +70,8 @@ export const generateContract = async (config: ContractConfig): Promise<string> 
   try {
     const { data } = await api.post('/contracts/generate', config);
     return await pollJob(data.jobId, '/contracts');
-  } catch (error) {
-    console.error("API Error:", error);
-    return "Error drafting contract.";
+  } catch (error: any) {
+    if (error.response?.status === 402) throw new Error(error.response.data.message);
+    throw error;
   }
 };
